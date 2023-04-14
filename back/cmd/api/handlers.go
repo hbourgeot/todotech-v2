@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"time"
 
-	"todotech.henrry.online/internal/password"
-	"todotech.henrry.online/internal/request"
-	"todotech.henrry.online/internal/response"
-	"todotech.henrry.online/internal/validator"
+	"todotech.henrry.online/store/internal/password"
+	"todotech.henrry.online/store/internal/request"
+	"todotech.henrry.online/store/internal/response"
+	"todotech.henrry.online/store/internal/validator"
 
 	"github.com/pascaldekloe/jwt"
 )

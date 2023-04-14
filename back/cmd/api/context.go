@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"todotech.henrry.online/internal/database"
+	"todotech.henrry.online/store/internal/database"
 )
 
 type contextKey string

@@ -708,4 +708,4 @@ Important: The version control system revision number will only be available whe
 
 ## Changing the module path
 
-The module path is currently set to `todotech.henrry.online`. If you want to change this please find and replace all instances of `todotech.henrry.online` in the codebase with your own module path.
+The module path is currently set to `todotech.henrry.online/store`. If you want to change this please find and replace all instances of `todotech.henrry.online/store` in the codebase with your own module path.

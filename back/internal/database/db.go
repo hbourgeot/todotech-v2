@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"todotech.henrry.online/assets"
+	"todotech.henrry.online/store/assets"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/source/iofs"

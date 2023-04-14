@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"todotech.henrry.online/internal/response"
-	"todotech.henrry.online/internal/validator"
+	"todotech.henrry.online/store/internal/response"
+	"todotech.henrry.online/store/internal/validator"
 )
 
 func (app *application) reportError(err error) {

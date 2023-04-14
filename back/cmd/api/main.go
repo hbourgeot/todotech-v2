@@ -7,10 +7,10 @@ import (
 	"runtime/debug"
 	"sync"
 
-	"todotech.henrry.online/internal/database"
-	"todotech.henrry.online/internal/leveledlog"
-	"todotech.henrry.online/internal/smtp"
-	"todotech.henrry.online/internal/version"
+	"todotech.henrry.online/store/internal/database"
+	"todotech.henrry.online/store/internal/leveledlog"
+	"todotech.henrry.online/store/internal/smtp"
+	"todotech.henrry.online/store/internal/version"
 )
 
 func main() {
@@ -66,7 +66,7 @@ func run(logger *leveledlog.Logger) error {
 	flag.StringVar(&cfg.basicAuth.hashedPassword, "basic-auth-hashed-password", "$2a$10$jRb2qniNcoCyQM23T59RfeEQUbgdAXfR6S0scynmKfJa5Gj3arGJa", "basic auth password hashed with bcrpyt")
 	flag.StringVar(&cfg.db.dsn, "db-dsn", "user:pass@localhost:5432/db", "postgreSQL DSN")
 	flag.BoolVar(&cfg.db.automigrate, "db-automigrate", true, "run migrations on startup")
-	flag.StringVar(&cfg.jwt.secretKey, "jwt-secret-key", "fyl2kklarmcuoyzlp5drdljle6qo6zoc", "secret key for JWT authentication")
+	flag.StringVar(&cfg.jwt.secretKey, "jwt-secret-key", "euc2lbhfvys3te6yacbpamr3bm4ss5r6", "secret key for JWT authentication")
 	flag.StringVar(&cfg.notifications.email, "notifications-email", "", "contact email address for error notifications")
 	flag.StringVar(&cfg.smtp.host, "smtp-host", "example.smtp.host", "smtp host")
 	flag.IntVar(&cfg.smtp.port, "smtp-port", 25, "smtp port")

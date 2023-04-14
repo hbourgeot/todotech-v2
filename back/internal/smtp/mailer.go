@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"time"
 
-	"todotech.henrry.online/assets"
-	"todotech.henrry.online/internal/funcs"
+	"todotech.henrry.online/store/assets"
+	"todotech.henrry.online/store/internal/funcs"
 
 	"github.com/go-mail/mail/v2"
 
