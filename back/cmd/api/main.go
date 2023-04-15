@@ -2,13 +2,11 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"runtime/debug"
 	"sync"
 	"todotech.henrry.online/internal/database"
 	leveledlog "todotech.henrry.online/internal/leveledlog"
-	"todotech.henrry.online/internal/version"
 )
 
 type config struct {
@@ -44,14 +42,7 @@ func run(logger *leveledlog.Logger) error {
 	flag.StringVar(&cfg.apiKey, "api-key", "08d98afd-951a-4d21-959f-55ee18f413c1", "API Key for request headers")
 	flag.StringVar(&cfg.dsn, "db-dsn", "postgres:Reyshell@localhost:5432/store", "dsn for connect to the database")
 
-	showVersion := flag.Bool("version", false, version.Get())
-
 	flag.Parse()
-
-	if *showVersion {
-		fmt.Printf("version: %s\n", version.Get())
-		return nil
-	}
 
 	db, err := database.New(cfg.dsn)
 	if err != nil {
