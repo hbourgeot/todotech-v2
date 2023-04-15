@@ -20,11 +20,11 @@ const (
 	defaultShutdownPeriod = 30 * time.Second
 )
 
-func (app *application) serveHTTP() error {
+func (st *store) serveHTTP() error {
 	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", app.config.httpPort),
-		Handler:      app.routes(),
-		ErrorLog:     log.New(app.logger, "", 0),
+		Addr:         fmt.Sprintf(":%d", st.config.port),
+		Handler:      st.routes(),
+		ErrorLog:     log.New(st.logger, "", 0),
 		IdleTimeout:  defaultIdleTimeout,
 		ReadTimeout:  defaultReadTimeout,
 		WriteTimeout: defaultWriteTimeout,
@@ -43,7 +43,7 @@ func (app *application) serveHTTP() error {
 		shutdownErrorChan <- srv.Shutdown(ctx)
 	}()
 
-	app.logger.Info("starting server on %s", srv.Addr)
+	st.logger.Info("starting server on %s", srv.Addr)
 
 	err := srv.ListenAndServe()
 	if !errors.Is(err, http.ErrServerClosed) {
@@ -55,8 +55,8 @@ func (app *application) serveHTTP() error {
 		return err
 	}
 
-	app.logger.Info("stopped server on %s", srv.Addr)
+	st.logger.Info("stopped server on %s", srv.Addr)
 
-	app.wg.Wait()
+	st.wg.Wait()
 	return nil
 }

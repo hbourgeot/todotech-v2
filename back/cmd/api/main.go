@@ -6,16 +6,27 @@ import (
 	"os"
 	"runtime/debug"
 	"sync"
-
-	"todotech.henrry.online/store/internal/database"
-	"todotech.henrry.online/store/internal/leveledlog"
-	"todotech.henrry.online/store/internal/smtp"
-	"todotech.henrry.online/store/internal/version"
+	"todotech.henrry.online/internal/database"
+	leveledlog "todotech.henrry.online/internal/leveledlog"
+	"todotech.henrry.online/internal/version"
 )
+
+type config struct {
+	baseURL string
+	port    int
+	apiKey  string
+	dsn     string
+}
+
+type store struct {
+	config config
+	db     any // *database.DB
+	logger *leveledlog.Logger
+	wg     sync.WaitGroup
+}
 
 func main() {
 	logger := leveledlog.NewLogger(os.Stdout, leveledlog.LevelAll, true)
-
 	err := run(logger)
 	if err != nil {
 		trace := debug.Stack()
@@ -23,58 +34,17 @@ func main() {
 	}
 }
 
-type config struct {
-	baseURL   string
-	httpPort  int
-	basicAuth struct {
-		username       string
-		hashedPassword string
-	}
-	db struct {
-		dsn         string
-		automigrate bool
-	}
-	jwt struct {
-		secretKey string
-	}
-	notifications struct {
-		email string
-	}
-	smtp struct {
-		host     string
-		port     int
-		username string
-		password string
-		from     string
-	}
-}
-
-type application struct {
-	config config
-	db     *database.DB
-	logger *leveledlog.Logger
-	mailer *smtp.Mailer
-	wg     sync.WaitGroup
-}
-
 func run(logger *leveledlog.Logger) error {
 	var cfg config
 
-	flag.StringVar(&cfg.baseURL, "base-url", "http://localhost:4444", "base URL for the application")
-	flag.IntVar(&cfg.httpPort, "http-port", 4444, "port to listen on for HTTP requests")
-	flag.StringVar(&cfg.basicAuth.username, "basic-auth-username", "admin", "basic auth username")
-	flag.StringVar(&cfg.basicAuth.hashedPassword, "basic-auth-hashed-password", "$2a$10$jRb2qniNcoCyQM23T59RfeEQUbgdAXfR6S0scynmKfJa5Gj3arGJa", "basic auth password hashed with bcrpyt")
-	flag.StringVar(&cfg.db.dsn, "db-dsn", "user:pass@localhost:5432/db", "postgreSQL DSN")
-	flag.BoolVar(&cfg.db.automigrate, "db-automigrate", true, "run migrations on startup")
-	flag.StringVar(&cfg.jwt.secretKey, "jwt-secret-key", "euc2lbhfvys3te6yacbpamr3bm4ss5r6", "secret key for JWT authentication")
-	flag.StringVar(&cfg.notifications.email, "notifications-email", "", "contact email address for error notifications")
-	flag.StringVar(&cfg.smtp.host, "smtp-host", "example.smtp.host", "smtp host")
-	flag.IntVar(&cfg.smtp.port, "smtp-port", 25, "smtp port")
-	flag.StringVar(&cfg.smtp.username, "smtp-username", "example_username", "smtp username")
-	flag.StringVar(&cfg.smtp.password, "smtp-password", "pa55word", "smtp password")
-	flag.StringVar(&cfg.smtp.from, "smtp-from", "Example Name <no-reply@example.org>", "smtp sender")
+	// Flags for config
 
-	showVersion := flag.Bool("version", false, "display version and exit")
+	flag.StringVar(&cfg.baseURL, "base-url", "http://localhost:4444", "base URL for the application")
+	flag.IntVar(&cfg.port, "http-port", 4444, "port to listen on for HTTP requests")
+	flag.StringVar(&cfg.apiKey, "api-key", "08d98afd-951a-4d21-959f-55ee18f413c1", "API Key for request headers")
+	flag.StringVar(&cfg.dsn, "db-dsn", "postgres:Reyshell@localhost:5432/store", "dsn for connect to the database")
+
+	showVersion := flag.Bool("version", false, version.Get())
 
 	flag.Parse()
 
@@ -83,20 +53,17 @@ func run(logger *leveledlog.Logger) error {
 		return nil
 	}
 
-	db, err := database.New(cfg.db.dsn, cfg.db.automigrate)
+	db, err := database.New(cfg.dsn)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	mailer := smtp.NewMailer(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.from)
-
-	app := &application{
+	st := &store{
 		config: cfg,
 		db:     db,
 		logger: logger,
-		mailer: mailer,
 	}
 
-	return app.serveHTTP()
+	return st.serveHTTP()
 }
