@@ -16,26 +16,26 @@ func (st *store) routes() http.Handler {
 
 	// customers
 	mux.HandlerFunc("GET", "/customers", st.GetAllCustomers)
-	mux.Handler("POST", "/customers", st.authenticate(http.HandlerFunc(st.AddCustomers)))
+	mux.HandlerFunc("POST", "/customers", st.AddCustomers)
 	mux.HandlerFunc("GET", "/customers/:id", st.GetCustomers)
-	mux.Handler("PUT", "/customers/:id", st.authenticate(http.HandlerFunc(st.UpdateCustomers)))
-	mux.Handler("DELETE", "/customers/:id", st.authenticate(http.HandlerFunc(st.DeleteCustomers)))
+	mux.HandlerFunc("PUT", "/customers/:id", st.UpdateCustomers)
+	mux.HandlerFunc("DELETE", "/customers/:id", st.DeleteCustomers)
 
 	// products
 	mux.HandlerFunc("GET", "/products", st.GetAllProducts)
-	mux.Handler("POST", "/products", st.authenticate(http.HandlerFunc(st.AddProducts)))
+	mux.HandlerFunc("POST", "/products", st.AddProducts)
 	mux.HandlerFunc("GET", "/products/:id", st.GetProducts)
-	mux.Handler("PUT", "/products/:id", st.authenticate(http.HandlerFunc(st.UpdateProducts)))
-	mux.Handler("DELETE", "/products/:id", st.authenticate(http.HandlerFunc(st.DeleteProducts)))
+	mux.HandlerFunc("PUT", "/products/:id", st.UpdateProducts)
+	mux.HandlerFunc("DELETE", "/products/:id", st.DeleteProducts)
 
 	// orders
 	mux.HandlerFunc("GET", "/orders", st.GetAllOrders)
-	mux.Handler("POST", "/orders", st.authenticate(http.HandlerFunc(st.AddOrders)))
+	mux.HandlerFunc("POST", "/orders", st.AddOrders)
 	mux.HandlerFunc("GET", "/orders/:id", st.GetOrders)
-	mux.Handler("PUT", "/orders/:id", st.authenticate(http.HandlerFunc(st.UpdateOrders)))
-	mux.Handler("DELETE", "/orders/:id", st.authenticate(http.HandlerFunc(st.DeleteOrders)))
+	mux.HandlerFunc("PUT", "/orders/:id", st.UpdateOrders)
+	mux.HandlerFunc("DELETE", "/orders/:id", st.DeleteOrders)
 
-	mux.Handler("POST", "/login", st.authenticate(http.HandlerFunc(st.AddUsers)))
-	mux.Handler("GET", "/login", st.authenticate(http.HandlerFunc(st.GetUsers)))
-	return mux
+	mux.HandlerFunc("POST", "/login", st.AddUsers)
+	mux.HandlerFunc("GET", "/login", st.GetUsers)
+	return st.recoverPanic(st.authenticate(mux))
 }
