@@ -35,5 +35,7 @@ func (st *store) routes() http.Handler {
 	mux.Handler("PUT", "/orders/:id", st.authenticate(http.HandlerFunc(st.UpdateOrders)))
 	mux.Handler("DELETE", "/orders/:id", st.authenticate(http.HandlerFunc(st.DeleteOrders)))
 
+	mux.Handler("POST", "/login", st.authenticate(http.HandlerFunc(st.AddUsers)))
+	mux.Handler("GET", "/login", st.authenticate(http.HandlerFunc(st.GetUsers)))
 	return mux
 }

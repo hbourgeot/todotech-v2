@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 
 	"todotech.henrry.online/internal/database/model"
 )
@@ -35,8 +34,8 @@ selectMultiSql         : SELECT * FROM `users`
 
 // GetUsers is a function to get a single record from the users table in the store database
 // error - ErrNotFound, db Find error
-func GetUsers(ctx context.Context, email, passw string) (record *model.Users, err error) {
-	sql := "SELECT * FROM `users` WHERE email = ? AND hashed_password = ?"
+func GetUsers(ctx context.Context, email string) (record *model.Users, err error) {
+	sql := "SELECT * FROM users WHERE email = ?"
 	sql = DB.Rebind(sql)
 
 	if Logger != nil {
@@ -44,7 +43,7 @@ func GetUsers(ctx context.Context, email, passw string) (record *model.Users, er
 	}
 
 	record = &model.Users{}
-	err = DB.GetContext(ctx, record, sql, email, passw)
+	err = DB.GetContext(ctx, record, sql, email)
 	if err != nil {
 		return nil, err
 	}
@@ -54,19 +53,17 @@ func GetUsers(ctx context.Context, email, passw string) (record *model.Users, er
 // AddUsers is a function to add a single record to users table in the store database
 // error - ErrInsertFailed, db save call failed
 func AddUsers(ctx context.Context, record *model.Users) (result *model.Users, RowsAffected int64, err error) {
-	sql := "INSERT INTO `users` ( id,  created,  email,  hashed_password) values ( ?, ?, ?, ? )"
+	sql := "INSERT INTO users ( id,  created,  email,  hashed_password) values ( ?, ?, ?, ? )"
 	sql = DB.Rebind(sql)
 
 	if Logger != nil {
 		Logger(ctx, sql)
 	}
 
-	rows := int64(1)
-	sql = fmt.Sprintf("%s returning %s", sql, "id")
 	dbResult := DB.QueryRowContext(ctx, sql, record.ID, record.Created, record.Email, record.HashedPassword)
 	err = dbResult.Scan(record.ID, record.Created, record.Email, record.HashedPassword)
 
-	return record, rows, err
+	return record, 1, err
 }
 
 // UpdateUsers is a function to update a single record from users table in the store database

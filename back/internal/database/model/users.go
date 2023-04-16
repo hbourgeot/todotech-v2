@@ -31,14 +31,13 @@ type Users struct {
 	//[ 2] email                                          TEXT                 null: false  primary: false  isArray: false  auto: false  col: TEXT            len: -1      default: []
 	Email string `json:"email"`
 	//[ 3] hashed_password                                TEXT                 null: false  primary: false  isArray: false  auto: false  col: TEXT            len: -1      default: []
-	HashedPassword string `json:"hashed_password"`
+	HashedPassword []byte `json:"hashed_password" db:"hashed_password"`
 }
 
 var usersTableInfo = &TableInfo{
 	Name: "users",
 	Columns: []*ColumnInfo{
-
-		&ColumnInfo{
+		{
 			Index:              0,
 			Name:               "id",
 			Comment:            ``,
@@ -59,7 +58,7 @@ var usersTableInfo = &TableInfo{
 			ProtobufPos:        1,
 		},
 
-		&ColumnInfo{
+		{
 			Index:              1,
 			Name:               "created",
 			Comment:            ``,
@@ -80,7 +79,7 @@ var usersTableInfo = &TableInfo{
 			ProtobufPos:        2,
 		},
 
-		&ColumnInfo{
+		{
 			Index:              2,
 			Name:               "email",
 			Comment:            ``,
@@ -101,7 +100,7 @@ var usersTableInfo = &TableInfo{
 			ProtobufPos:        3,
 		},
 
-		&ColumnInfo{
+		{
 			Index:              3,
 			Name:               "hashed_password",
 			Comment:            ``,
