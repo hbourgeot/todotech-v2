@@ -6,6 +6,14 @@ declare global {
 		// interface Locals {}
 		// interface PageData {}
 		// interface Platform {}
+		interface Locals {
+			user: User;
+		}
+	}
+
+	interface User {
+		email: string;
+		name: string;
 	}
 }
 
